@@ -47,7 +47,7 @@ resource "aws_instance" "iris_ec2_instance_demo" {
   count = var.iris_demo_ec2_instance_details[1]
   key_name = aws_key_pair.iris_terraform_demo_key.key_name
 
-  user_data = "${file("entry.sh")}"
+  user_data = "${file("./scripts/iris_ec2_entry.sh")}"
 
   tags = {
     "IRIS Software Group demo" = var.my_instance[2]
