@@ -24,3 +24,11 @@ data "aws_ami" "iris_ec2_ami_filter" {
     values = ["x86_64"]
   }
 }
+
+# Add configuration to authorisation keys
+# Configure the AWS Provider
+provider "aws" {
+  shared_config_files = ["~/.aws/config"]
+  shared_credentials_files = [ "~/.aws/credentials" ]
+  profile = "default"
+}
