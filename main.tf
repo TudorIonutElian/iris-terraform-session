@@ -39,6 +39,19 @@ resource "aws_key_pair" "iris_terraform_demo_key" {
   public_key = file("./auth_keys/iris_terraform_demo.pub")
 }
 
+resource "aws_security_group" "web_security_group" {
+  name = "web_security_group"
+  description = "Configuration for allowing traffic for 22 and 80 port"
+
+  ingress = {
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+}
+
 # Adding ec2 instance configuration
 resource "aws_instance" "iris_ec2_instance_demo" {
   ami = data.aws_ami.iris_ec2_ami_filter.id
@@ -46,6 +59,7 @@ resource "aws_instance" "iris_ec2_instance_demo" {
   instance_type = var.iris_demo_ec2_instance_details[0]
   count = var.iris_demo_ec2_instance_details[1]
   key_name = aws_key_pair.iris_terraform_demo_key.key_name
+  security_groups = [ "web_security_group" ]
 
   user_data = "${file("./scripts/iris_ec2_entry.sh")}"
 
