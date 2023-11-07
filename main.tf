@@ -1,4 +1,4 @@
-#Adding terraform required providers block
+# Adding terraform required providers block
 terraform {
   required_providers {
     aws = {
@@ -8,6 +8,13 @@ terraform {
   }
 }
 
+# Add configuration to authorisation keys
+# Configure the AWS Provider
+provider "aws" {
+  shared_config_files = ["~/.aws/config"]
+  shared_credentials_files = [ "~/.aws/credentials" ]
+  profile = "default"
+}
 
 # Added data source to filter the ami
 data "aws_ami" "iris_ec2_ami_filter" {
@@ -25,10 +32,24 @@ data "aws_ami" "iris_ec2_ami_filter" {
   }
 }
 
-# Add configuration to authorisation keys
-# Configure the AWS Provider
-provider "aws" {
-  shared_config_files = ["~/.aws/config"]
-  shared_credentials_files = [ "~/.aws/credentials" ]
-  profile = "default"
+
+# Adding iris terraform_public_key
+resource "aws_key_pair" "iris_terraform_demo_key" {
+  key_name = "terraform_key_ro"
+  public_key = file("./auth_keys/iris_terraform_demo.pub")
+}
+
+# Adding ec2 instance configuration
+resource "aws_instance" "iris_ec2_instance_demo" {
+  ami = data.aws_ami.iris_ec2_ami_filter.id
+  #ami = "ami-0766f68f0b06ab145"
+  instance_type = var.iris_demo_ec2_instance_details[0]
+  count = var.iris_demo_ec2_instance_details[1]
+  key_name = aws_key_pair.iris_terraform_demo_key.key_name
+
+  user_data = "${file("entry.sh")}"
+
+  tags = {
+    "IRIS Software Group demo" = var.my_instance[2]
+  }
 }
