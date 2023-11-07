@@ -68,7 +68,7 @@ resource "aws_instance" "iris_ec2_instance_demo" {
   key_name = aws_key_pair.iris_terraform_demo_key.key_name
   security_groups = [ "web_security_group" ]
 
-  user_data = "${file("./scripts/iris_ec2_entry.sh")}"
+  user_data = "${file("scripts/iris_ec2_entry.sh")}"
 
   tags = {
     "IRIS Software Group demo" = var.iris_demo_ec2_instance_details[2]
