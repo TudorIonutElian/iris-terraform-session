@@ -43,7 +43,7 @@ resource "aws_security_group" "web_security_group" {
   name = "web_security_group"
   description = "Configuration for allowing traffic for 22 and 80 port"
 
-  ingress = {
+  ingress {
     from_port = 8080
     to_port = 8080
     protocol = "tcp"
