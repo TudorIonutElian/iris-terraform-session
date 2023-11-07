@@ -64,6 +64,6 @@ resource "aws_instance" "iris_ec2_instance_demo" {
   user_data = "${file("./scripts/iris_ec2_entry.sh")}"
 
   tags = {
-    "IRIS Software Group demo" = var.my_instance[2]
+    "IRIS Software Group demo" = var.iris_demo_ec2_instance_details[2]
   }
 }
