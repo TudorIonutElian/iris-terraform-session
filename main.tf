@@ -43,7 +43,7 @@ resource "aws_route_table" "iris_terraform_demo_route_table" {
 resource "aws_subnet" "iris_terraform_demo_subnet" {
   vpc_id            = aws_vpc.iris_terraform_demo_vpc.id
   cidr_block        = "10.0.1.0/24" # Replace with your desired CIDR block
-  availability_zone = "eu-central-1"
+  availability_zone = "eu-central-1a"
   tags = {
     Name = "prod_subnet"
   }
