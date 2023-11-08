@@ -18,7 +18,7 @@ provider "aws" {
 
 # Add VPC
 resource "aws_vpc" "iris_terraform_demo_vpc" {
-  cidr_block = "10.0.0.0/16" # Replace with your desired CIDR block
+  cidr_block = "10.0.1.0/24" # Replace with your desired CIDR block
   tags = {
     Name = "Prod_VPC"
   }
