@@ -80,7 +80,7 @@ resource "aws_key_pair" "iris_terraform_demo_key" {
 resource "aws_security_group" "web_security_group" {
   name        = "webserver_sg"
   description = "Allow inbound SSH and HTTP traffic"
-  vpc_id      = aws_vpc.demo_vpc.id
+  vpc_id      = aws_vpc.iris_terraform_demo_vpc.id
 
   ingress {
     from_port   = 22
@@ -117,7 +117,7 @@ resource "aws_instance" "iris_ec2_instance_demo" {
   ami = data.aws_ami.iris_ec2_ami_filter.id
   #ami = "ami-0766f68f0b06ab145"
   instance_type = var.iris_demo_ec2_instance_details[0]
-  count = var.iris_demo_ec2_instance_details[1]
+  count = 1
   key_name = aws_key_pair.iris_terraform_demo_key.key_name
   security_groups = [ "web_security_group" ]
 
