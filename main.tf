@@ -118,7 +118,7 @@ resource "aws_instance" "iris_ec2_instance_demo" {
   #ami = "ami-0766f68f0b06ab145"
   instance_type = var.iris_demo_ec2_instance_details[0]
   key_name = aws_key_pair.iris_terraform_demo_key.key_name
-  security_groups = [ "web_security_group" ]
+  vpc_security_group_ids  = [ "web_security_group" ]
 
   user_data = file("./scripts/iris_ec2_entry.sh")
 
