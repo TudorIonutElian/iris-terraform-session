@@ -86,10 +86,10 @@ resource "aws_instance" "web" {
 
   user_data = <<-EOF
   #!/bin/bash
-  echo "*** Installing apache2"
   sudo apt update -y
   sudo apt install apache2 -y
-  echo "*** Completed Installing apache2"
+  sudo systemctl start apache2
+  echo "Deploy a web server on aws" | sudo tee /var/www/html/index.html
   EOF
 
   tags = {
