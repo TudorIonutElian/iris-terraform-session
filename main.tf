@@ -81,7 +81,7 @@ data "aws_ami" "iris_ec2_ami_filter" {
 resource "aws_instance" "web" {
   ami = data.aws_ami.iris_ec2_ami_filter.id
   instance_type   = var.instance_type
-  security_groups = [aws_security_group.sg.id]
+  vpc_security_group_ids = [aws_security_group.sg.id]
 
   user_data = <<-EOF
   #!/bin/bash
