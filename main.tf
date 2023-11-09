@@ -16,113 +16,108 @@ provider "aws" {
   profile = "default"
 }
 
-# Add VPC
-resource "aws_vpc" "iris_terraform_demo_vpc" {
-  cidr_block = "178.0.0.0/16" # Replace with your desired CIDR block
+# Create a VPC
+resource "aws_vpc" "app_vpc" {
+  cidr_block = var.vpc_cidr
+
   tags = {
-    Name = "Prod_VPC"
+    Name = "app-vpc"
   }
 }
 
-resource "aws_internet_gateway" "iris_terraform_demo_gw" {
-  vpc_id = aws_vpc.iris_terraform_demo_vpc.id
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.app_vpc.id
+
+  tags = {
+    Name = "vpc_igw"
+  }
 }
 
-resource "aws_route_table" "iris_terraform_demo_route_table" {
-  vpc_id = aws_vpc.iris_terraform_demo_vpc.id
+resource "aws_subnet" "public_subnet" {
+  vpc_id            = aws_vpc.app_vpc.id
+  cidr_block        = var.public_subnet_cidr
+  map_public_ip_on_launch = true
+  availability_zone = "us-west-2a"
+
+  tags = {
+    Name = "public-subnet"
+  }
+}
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.app_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.iris_terraform_demo_gw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
+
   tags = {
-    Name = "prod-RT"
+    Name = "public_rt"
   }
 }
 
-resource "aws_subnet" "iris_terraform_demo_subnet" {
-  vpc_id            = aws_vpc.iris_terraform_demo_vpc.id
-  cidr_block        = "178.0.10.0/24" # Replace with your desired CIDR block
-  availability_zone = "eu-central-1a"
+resource "aws_route_table_association" "public_rt_asso" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_instance" "web" {
+  ami             = "ami-005e54dee72cc1d00" 
+  instance_type   = var.instance_type
+  key_name        = var.instance_key
+  subnet_id       = aws_subnet.public_subnet.id
+  security_groups = [aws_security_group.sg.id]
+
+  user_data = <<-EOF
+  #!/bin/bash
+  echo "*** Installing apache2"
+  sudo apt update -y
+  sudo apt install apache2 -y
+  echo "*** Completed Installing apache2"
+  EOF
+
   tags = {
-    Name = "prod_subnet"
-  }
-}
-
-resource "aws_route_table_association" "iris_terraform_demo_route_table_asso" {
-  subnet_id      = aws_subnet.iris_terraform_demo_subnet.id
-  route_table_id = aws_route_table.iris_terraform_demo_route_table.id
-}
-
-# Added data source to filter the ami
-data "aws_ami" "iris_ec2_ami_filter" {
-  owners = ["amazon"]
-  most_recent = true
-
-  filter {
-    name = "name"
-    values = ["al2023-ami-*-x86_64"]
+    Name = "web_instance"
   }
 
-  filter {
-    name = "architecture"
-    values = ["x86_64"]
-  }
+  volume_tags = {
+    Name = "web_instance"
+  } 
 }
 
-
-# Adding iris terraform_public_key
-resource "aws_key_pair" "iris_terraform_demo_key" {
-  key_name = "terraform_key_ro"
-  public_key = file("./auth_keys/iris_terraform_demo.pub")
-}
-
-resource "aws_security_group" "web_security_group" {
-  name        = "webserver_sg"
-  description = "Allow inbound SSH and HTTP traffic"
-  vpc_id      = aws_vpc.iris_terraform_demo_vpc.id
+resource "aws_security_group" "sg" {
+  name        = "allow_ssh_http"
+  description = "Allow ssh http inbound traffic"
+  vpc_id      = aws_vpc.app_vpc.id
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description      = "SSH from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
-  tags = {
-    Name = "Web-traffic"
-  }
-}
-
-# Adding ec2 instance configuration
-resource "aws_instance" "iris_ec2_instance_demo" {
-  ami = data.aws_ami.iris_ec2_ami_filter.id
-  #ami = "ami-0766f68f0b06ab145"
-  instance_type = var.iris_demo_ec2_instance_details[0]
-  key_name = aws_key_pair.iris_terraform_demo_key.key_name
-  vpc_security_group_ids  = [ aws_security_group.web_security_group.id ]
-
-  user_data = file("./scripts/iris_ec2_entry.sh")
 
   tags = {
-    "IRIS Software Group demo" = var.iris_demo_ec2_instance_details[2]
+    Name = "allow_ssh_http"
   }
 }

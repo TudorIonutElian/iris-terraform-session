@@ -1,5 +1,8 @@
-variable "iris_demo_ec2_instance_details" {
-  description = "This is a simple tuple variable used in IRIS Terraform demo session"
-  type = tuple([ string, number, bool ])
-  default = [ "t2.micro", 2, true ]
+variable "region" {
+  default = "us-west-2"
 }
+variable "instance_type" {}
+variable "creds" {}
+variable "instance_key" {}
+variable "vpc_cidr" {}
+variable "public_subnet_cidr" {}
