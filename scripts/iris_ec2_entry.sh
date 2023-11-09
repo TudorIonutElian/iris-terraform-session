@@ -1,12 +1,12 @@
 #!/bin/bash
 # package updates
-sudo yum check-update
-sudo yum update 
-
-# apache installation, enabling and status check
-sudo yum -y install httpd
-sudo systemctl start httpd
-sudo systemctl enable httpd
+#!/bin/bash
+  # Use this for your user data (script from top to bottom)
+  # install httpd (Linux 2 version)
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
 
 cd /var/www/html/
 echo '<!DOCTYPE html>' > index.html
