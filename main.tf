@@ -16,15 +16,6 @@ provider "aws" {
   profile = "default"
 }
 
-# Create a VPC
-resource "aws_vpc" "app_vpc" {
-  cidr_block = var.vpc_cidr
-
-  tags = {
-    Name = "app-vpc"
-  }
-}
-
 resource "aws_security_group" "sg" {
   name        = "allow_ssh_http"
   description = "Allow ssh http inbound traffic"
