@@ -81,7 +81,6 @@ resource "aws_route_table_association" "public_rt_asso" {
 resource "aws_instance" "web" {
   ami = data.aws_ami.iris_ec2_ami_filter.id
   instance_type   = var.instance_type
-  key_name        = var.instance_key
   subnet_id       = aws_subnet.public_subnet.id
   security_groups = [aws_security_group.sg.id]
 
