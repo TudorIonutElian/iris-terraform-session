@@ -25,6 +25,22 @@ resource "aws_vpc" "app_vpc" {
   }
 }
 
+# Added data source to filter the ami
+data "aws_ami" "iris_ec2_ami_filter" {
+  owners = ["amazon"]
+  most_recent = true
+
+  filter {
+    name = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+
+  filter {
+    name = "architecture"
+    values = ["x86_64"]
+  }
+}
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.app_vpc.id
 
@@ -63,7 +79,7 @@ resource "aws_route_table_association" "public_rt_asso" {
 }
 
 resource "aws_instance" "web" {
-  ami             = "ami-005e54dee72cc1d00" 
+  ami = data.aws_ami.iris_ec2_ami_filter.id
   instance_type   = var.instance_type
   key_name        = var.instance_key
   subnet_id       = aws_subnet.public_subnet.id
