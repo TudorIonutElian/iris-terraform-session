@@ -11,5 +11,4 @@ variable entry_script_path {
 variable "ami_owner" {
     description = "Value for AMI owner"
     default = "amazon"
-  
 }
