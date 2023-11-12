@@ -44,18 +44,6 @@ resource "aws_instance" "web" {
   key_name = aws_key_pair.iris_tf_demo_key_pair.key_name
   user_data = file("scripts/iris_tf_demo_entry_script.sh")
 
-  provisioner "file" {
-        source      = file("scripts/iris_tf_ec2_template.zip")
-        destination = "/var/www/html"
-       
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = "${file("private_key/iris-tf-demo")}"
-      host        = "${self.public_ip}"
-    }
-   }
-
   tags = {
     Name = "web_instance"
   }
