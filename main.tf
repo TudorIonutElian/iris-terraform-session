@@ -24,7 +24,7 @@ provider "aws" {
 **********************************************************/
 
 data "aws_ami" "iris_tf_demo_ec2_ami_filter" {
-  owners = [var.ami_owner]
+  owners = ["amazon"]
   most_recent = true
 
   filter {
