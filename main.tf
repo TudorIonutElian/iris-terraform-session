@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 # Added data source to filter the ami
-data "aws_ami" "iris_ec2_ami_filter" {
+data "aws_ami" "iris_tf_demo_ec2_ami_filter" {
   owners = ["amazon"]
   most_recent = true
 
@@ -32,9 +32,14 @@ data "aws_ami" "iris_ec2_ami_filter" {
   }
 }
 
+resource "aws_key_pair" "iris_tf_demo_key_pair" {
+  key_name   = "deployer-key"
+  public_key = file("auth_keys/iris-tf-demo.pub")
+}
+
 
 resource "aws_instance" "web" {
-  ami = data.aws_ami.iris_ec2_ami_filter.id
+  ami = data.aws_ami.iris_tf_demo_ec2_ami_filter.id
   instance_type   = "t2.micro"
 
   user_data = file("scripts/iris_ec2_entry.sh")
