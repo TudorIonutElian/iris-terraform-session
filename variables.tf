@@ -1,5 +1,14 @@
-variable "iris_demo_ec2_instance_details" {
-  description = "This is a simple tuple variable used in IRIS Terraform demo session"
-  type = tuple([ string, number, bool ])
-  default = [ "t2.micro", 2, true ]
+variable instance_type {
+    description = "Value for the ec2 instance type"
+    default = "t2.micro"
+}
+
+variable entry_script_path {
+    description = "Path value for entry script"
+    default = "scripts/iris_tf_demo_entry_script.sh"
+}
+
+variable "ami_owner" {
+    description = "Value for AMI owner"
+    default = "amazon"
 }
