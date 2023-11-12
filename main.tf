@@ -51,7 +51,7 @@ resource "aws_instance" "web" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = "${file("../auth_keys/iris-tf-demo")}"
+      private_key = "${file("private_key/iris-tf-demo")}"
       host        = "${self.public_ip}"
     }
    }
