@@ -1,1 +1,2 @@
 terraform.tfstate
+auth_keys/*
