@@ -41,8 +41,20 @@ resource "aws_key_pair" "iris_tf_demo_key_pair" {
 resource "aws_instance" "web" {
   ami = data.aws_ami.iris_tf_demo_ec2_ami_filter.id
   instance_type   = "t2.micro"
-
+  key_name = aws_key_pair.iris_tf_demo_key_pair.key_name
   user_data = file("scripts/iris_tf_demo_entry_script.sh")
+
+  provisioner "file" {
+        source      = file("scripts/iris_tf_ec2_template.zip")
+        destination = "/var/www/html"
+       
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = "${file("../auth_keys/iris-tf-demo")}"
+      host        = "${self.public_ip}"
+    }
+   }
 
   tags = {
     Name = "web_instance"
