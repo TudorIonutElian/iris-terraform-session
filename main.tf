@@ -42,7 +42,7 @@ resource "aws_instance" "web" {
   ami = data.aws_ami.iris_tf_demo_ec2_ami_filter.id
   instance_type   = "t2.micro"
 
-  user_data = file("scripts/iris_ec2_entry.sh")
+  user_data = file("scripts/iris_tf_demo_entry_script.sh")
 
   tags = {
     Name = "web_instance"
