@@ -53,7 +53,7 @@ resource "aws_instance" "iris_tf_demo_ec2_instance" {
   ami = data.aws_ami.iris_tf_demo_ec2_ami_filter.id
   instance_type   = var.instance_type
   key_name = aws_key_pair.iris_tf_demo_key_pair.key_name
-  user_data = file(var.entry_script_path)
+  user_data = file("scripts/iris_tf_demo_entry_script.sh")
 
   tags = {
     Name = "iris_terraform_demo_ec2_instance"
