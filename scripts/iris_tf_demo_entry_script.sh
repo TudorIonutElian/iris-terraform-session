@@ -9,8 +9,22 @@ yum install -y git
 systemctl start httpd
 systemctl enable httpd
 
+################################################
+# Go to html directory
+################################################
 cd /var/www/html/
 
+################################################
+# Clone demo website
+################################################
 git clone https://github.com/TudorIonutElian/sample-iris-demo-website.git
 
-cp sample-iris-demo-website/index.html /var/www/html/index.html
+################################################
+# Move index.html to public
+################################################
+mv sample-iris-demo-website/* .
+
+################################################
+# Delete old directory
+################################################
+rm -r sample-iris-demo-website
