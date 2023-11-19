@@ -17,7 +17,8 @@ echo '<meta charset="UTF-8">' >> index.html
 echo '</head>' >> index.html
 echo '<body>' >> index.html
 echo '<div style="display:flex; flex-direction:columns; align-items: center; justify-content: center; background-color: blue; color: #fff;">' >> index.html
-echo '<div><h1>Welcome to Iris Terraform Demo</h1></div>' >> index.html
-echo '<div><h3>Hope you enjoyed!</h3></div>' >> index.html
+echo '<div>Welcome to Iris Terraform Demo</div>' >> index.html
+echo '<div>Hope you enjoyed!</div>' >> index.html
 echo '</div>' >> index.html
+echo '</body>' >> index.html
 echo '</html>' >> index.html
